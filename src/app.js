@@ -1,11 +1,13 @@
 const express = require("express");
 const multer = require("multer");
 const importRouter = require("./imports/import-router");
+const orderRouter = require("./orders/order-router");
 
 const app = express();
 
 app.use(express.json());
 app.use("/v1/imports", importRouter);
+app.use("/v1/orders", orderRouter);
 
 app.get("/health", (request, response) => {
   response.json({ status: "ok" });

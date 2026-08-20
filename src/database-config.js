@@ -4,4 +4,6 @@ module.exports = {
   user: process.env.DB_USER || "app",
   password: process.env.DB_PASSWORD || "app",
   database: process.env.DB_NAME || "vertical_logistica",
+  supportBigNumbers: true,
+  bigNumberStrings: true,
 };
