@@ -12,7 +12,9 @@ afterEach(async () => {
   jest.clearAllMocks();
 
   const files = await fs.readdir(uploadDir).catch(() => []);
-  await Promise.all(files.map((file) => fs.unlink(path.join(uploadDir, file))));
+  await Promise.all(
+    files.map((file) => fs.rm(path.join(uploadDir, file), { force: true })),
+  );
 });
 
 describe("Importações", () => {

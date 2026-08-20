@@ -4,6 +4,8 @@ services:
     command: sh -c "npm run migrate && npm start"
     environment:
       PORT: 3000
+      REQUEST_TIMEOUT_MS: 1800000
+      MAX_FILE_SIZE_MB: ${MAX_FILE_SIZE_MB:-2048}
       DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: app

@@ -71,4 +71,24 @@ describe("Processamento de importações", () => {
       "O arquivo possui 1 linha(s) inválida(s).",
     );
   });
+
+  it("reprova um arquivo vazio", async () => {
+    const filePath = path.join(tempDir, "empty.txt");
+    await fs.mkdir(tempDir, { recursive: true });
+    await fs.writeFile(filePath, "");
+
+    const result = await processImport(
+      { id: "import-id", stored_name: "empty.txt" },
+      { filePath, batchSize: 10 },
+    );
+
+    expect(result.status).toBe("FAILED");
+    expect(repository.fail).toHaveBeenCalledWith(
+      "import-id",
+      0,
+      0,
+      0,
+      "O arquivo está vazio.",
+    );
+  });
 });

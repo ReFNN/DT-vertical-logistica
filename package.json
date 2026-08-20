@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "benchmark": "node scripts/benchmark.js",
     "dev": "nodemon src/server.js",
+    "generate:file": "node scripts/generate-file.js",
     "migrate": "node src/migrate.js",
     "start": "node src/server.js",
     "test": "jest --runInBand",
+    "test:coverage": "jest --runInBand --coverage",
     "worker": "node src/worker.js"
   },
   "dependencies": {

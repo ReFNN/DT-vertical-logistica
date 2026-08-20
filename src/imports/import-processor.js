@@ -49,6 +49,11 @@ async function processImport(importData, options = {}) {
   await repository.saveErrors(importData.id, errors);
   await repository.updateProgress(importData.id, processed, valid, invalid);
 
+  if (processed === 0) {
+    await repository.fail(importData.id, 0, 0, 0, "O arquivo está vazio.");
+    return { status: "FAILED", processed, valid, invalid };
+  }
+
   if (invalid > 0) {
     await repository.cleanupData(importData.id);
     await repository.fail(

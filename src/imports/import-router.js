@@ -4,6 +4,7 @@ const { randomUUID } = require("node:crypto");
 const express = require("express");
 const multer = require("multer");
 const controller = require("./import-controller");
+const { maxFileSizeBytes } = require("./upload-config");
 
 const uploadDir = process.env.UPLOAD_DIR || path.join("storage", "uploads");
 
@@ -18,7 +19,7 @@ const upload = multer({
   }),
   limits: {
     files: 1,
-    fileSize: 2 * 1024 * 1024 * 1024,
+    fileSize: maxFileSizeBytes,
   },
 });
 

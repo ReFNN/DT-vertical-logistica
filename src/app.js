@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const importRouter = require("./imports/import-router");
+const { maxFileSizeMb } = require("./imports/upload-config");
 const orderRouter = require("./orders/order-router");
 
 const app = express();
@@ -17,7 +18,7 @@ app.use((error, request, response, next) => {
   if (error instanceof multer.MulterError && error.code === "LIMIT_FILE_SIZE") {
     return response.status(413).json({
       error: "FILE_TOO_LARGE",
-      message: "O arquivo deve ter no máximo 2 GB.",
+      message: `O arquivo deve ter no máximo ${maxFileSizeMb} MB.`,
     });
   }
 

@@ -1,0 +1,212 @@
+{
+  "info": {
+    "_postman_id": "e6350a07-798e-47ea-a69b-5b74fb624f41",
+    "name": "Vertical Logística",
+    "description": "Fluxo de importação e consulta de pedidos da API Vertical Logística.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "API",
+      "item": [
+        {
+          "name": "Verificar saúde",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"API está disponível\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().status).to.eql(\"ok\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Importações",
+      "item": [
+        {
+          "name": "Enviar arquivo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Importação foi aceita\", function () {",
+                  "  pm.response.to.have.status(202);",
+                  "  const resposta = pm.response.json();",
+                  "  pm.expect(resposta.import_id).to.be.a(\"string\");",
+                  "  pm.expect(resposta.status).to.eql(\"PENDING\");",
+                  "  pm.collectionVariables.set(\"import_id\", resposta.import_id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "description": "Selecione um arquivo no formato legado.",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/v1/imports",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "imports"]
+            },
+            "description": "Selecione o arquivo no campo file. O import_id da resposta será salvo automaticamente na collection."
+          }
+        },
+        {
+          "name": "Consultar importação",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Importação foi encontrada\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  const resposta = pm.response.json();",
+                  "  pm.expect(resposta.import_id).to.eql(pm.collectionVariables.get(\"import_id\"));",
+                  "  pm.expect([\"PENDING\", \"PROCESSING\", \"COMPLETED\", \"FAILED\"]).to.include(resposta.status);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/imports/{{import_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "imports", "{{import_id}}"]
+            },
+            "description": "Consulte novamente até o status mudar para COMPLETED ou FAILED."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "Listar pedidos da importação mais recente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Pedidos foram retornados\", function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/orders?page={{page}}&limit={{limit}}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "orders"],
+              "query": [
+                { "key": "page", "value": "{{page}}" },
+                { "key": "limit", "value": "{{limit}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar pedidos por importação",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/orders?import_id={{import_id}}&page={{page}}&limit={{limit}}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "orders"],
+              "query": [
+                { "key": "import_id", "value": "{{import_id}}" },
+                { "key": "page", "value": "{{page}}" },
+                { "key": "limit", "value": "{{limit}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultar pedido por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/orders?import_id={{import_id}}&order_id={{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "orders"],
+              "query": [
+                { "key": "import_id", "value": "{{import_id}}" },
+                { "key": "order_id", "value": "{{order_id}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Consultar pedidos por período",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/v1/orders?import_id={{import_id}}&start_date={{start_date}}&end_date={{end_date}}&page={{page}}&limit={{limit}}",
+              "host": ["{{base_url}}"],
+              "path": ["v1", "orders"],
+              "query": [
+                { "key": "import_id", "value": "{{import_id}}" },
+                { "key": "start_date", "value": "{{start_date}}" },
+                { "key": "end_date", "value": "{{end_date}}" },
+                { "key": "page", "value": "{{page}}" },
+                { "key": "limit", "value": "{{limit}}" }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:3000", "type": "string" },
+    { "key": "import_id", "value": "", "type": "string" },
+    { "key": "order_id", "value": "753", "type": "string" },
+    { "key": "start_date", "value": "2021-03-01", "type": "string" },
+    { "key": "end_date", "value": "2021-03-31", "type": "string" },
+    { "key": "page", "value": "1", "type": "string" },
+    { "key": "limit", "value": "100", "type": "string" }
+  ]
+}
