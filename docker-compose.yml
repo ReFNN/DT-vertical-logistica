@@ -16,6 +16,30 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3000/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  worker:
+    build: .
+    command: npm run worker
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: app
+      DB_PASSWORD: app
+      DB_NAME: vertical_logistica
+      UPLOAD_DIR: storage/uploads
+      BATCH_SIZE: 1000
+      WORKER_INTERVAL_MS: 2000
+    volumes:
+      - uploads:/app/storage/uploads
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
 
   mysql:
     image: mysql:8.4
