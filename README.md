@@ -1,4 +1,4 @@
-# Vertical Logística
+# API de Importação de Pedidos
 
 ## Objetivo do Desafio 
 
@@ -28,13 +28,6 @@ docker compose up --build -d
 ```
 
 A API ficará disponível em `http://localhost:3000`. As migrations são executadas automaticamente antes da inicialização.
-
-Para verificar os serviços:
-
-```bash
-docker compose ps
-docker compose logs -f api worker
-```
 
 ## Postman
 
