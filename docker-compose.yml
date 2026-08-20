@@ -1,13 +1,14 @@
 services:
   api:
     build: .
+    command: sh -c "npm run migrate && npm start"
     environment:
       PORT: 3000
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_USER: logistics
-      DB_PASSWORD: logistics
-      DB_NAME: logistics
+      DB_USER: app
+      DB_PASSWORD: app
+      DB_NAME: vertical_logistica
     ports:
       - "3000:3000"
     depends_on:
@@ -17,9 +18,9 @@ services:
   mysql:
     image: mysql:8.4
     environment:
-      MYSQL_DATABASE: logistics
-      MYSQL_USER: logistics
-      MYSQL_PASSWORD: logistics
+      MYSQL_DATABASE: vertical_logistica
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
